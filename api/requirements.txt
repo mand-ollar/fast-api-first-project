@@ -1,0 +1,9 @@
+alembic
+bcrypt==4.3.0
+fastapi[standard]
+mysqlclient
+passlib[bcrypt]
+py-ulid
+sqlalchemy
+types-passlib
+uvicorn

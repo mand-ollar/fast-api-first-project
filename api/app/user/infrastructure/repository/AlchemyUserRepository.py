@@ -14,10 +14,14 @@ class AlchemyUserRepository(UserRepository):
     def __init__(self, db: Session) -> None:
         self.db: Session = db
 
+    def get(self) -> list[User]:
+        users: list[UserAlchemyEntity] = self.db.query(UserAlchemyEntity).all()
+        return [UserMapper.to_domain_entity(user) for user in users]
+
     def save(self, user: User) -> User:
         new_user: UserAlchemyEntity = UserAlchemyEntity(
-            id=user.id,
-            name=user.username,
+            id=str(user.id),
+            username=user.username,
             email=user.email,
             password=user.password,
             memo=user.memo,

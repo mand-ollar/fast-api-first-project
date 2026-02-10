@@ -26,7 +26,7 @@ class CreateUserUseCase:
 
         now: datetime = datetime.now()
         user: User = User(
-            id=self.ulid.generate(),
+            id=self.ulid,
             username=username,
             email=email,
             password=self.password_hasher.hash(password),

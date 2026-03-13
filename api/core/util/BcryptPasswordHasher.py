@@ -6,7 +6,7 @@ class BcryptPasswordHasher:
         self.context: CryptContext = context
 
     def hash(self, secret: str) -> str:
-        return self.context.hash(secret)
+        return self.context.hash(secret=secret)
 
     def verify(self, plain: str, hashed: str) -> bool:
         return self.context.verify(secret=plain, hash=hashed)

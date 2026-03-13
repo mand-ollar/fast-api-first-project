@@ -1,0 +1,2 @@
+class InvalidPrincipal(Exception):
+    pass

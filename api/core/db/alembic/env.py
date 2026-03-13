@@ -3,7 +3,10 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.note.infrastructure.repository.entity import NoteAlchemyEntity, TagAlchemyEntity  # noqa: F401
 from app.user.infrastructure.repository.entity import UserAlchemyEntity  # noqa: F401
+from core.auth.infrastructure.repository.credentials.entity import CredentialsAlchemyEntity  # noqa: F401
+from core.auth.infrastructure.repository.principal.entity import PrincipalAlchemyEntity  # noqa: F401
 from core.db.db import Base
 
 # this is the Alembic Config object, which provides

@@ -3,9 +3,14 @@ from typing import Generator
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-DATABASE_URL: str = "mysql+mysqldb://root:test@127.0.0.1/fastapi-ca"
+from .config import db_config
 
-engine: Engine = create_engine(DATABASE_URL)
+engine: Engine = create_engine(
+    db_config.url,
+    connect_args={},
+    pool_size=db_config.pool_size,
+    max_overflow=db_config.max_overflow,
+)
 SessionLocal: sessionmaker[Session] = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from ulid import ULID  # type: ignore
 
+from core.auth.domain.enum import Role
 from core.db.db import Base
 
 
@@ -17,3 +18,4 @@ class UserAlchemyEntity(Base):
     memo: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now())
+    role: Mapped[Role] = mapped_column(String(32), nullable=False)

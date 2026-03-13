@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class UpdateUserResponse(BaseModel):
+class PatchUserResponse(BaseModel):
     username: str
     password: str

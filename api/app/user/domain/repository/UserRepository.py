@@ -7,7 +7,7 @@ from app.user.domain.entity import User
 
 class UserRepository(ABC):
     @abstractmethod
-    def get(self) -> list[User]:
+    def get(self, page: int, items_per_page: int) -> tuple[int, list[User]]:
         raise NotImplementedError
 
     @abstractmethod
@@ -24,4 +24,8 @@ class UserRepository(ABC):
 
     @abstractmethod
     def update(self, user: User) -> User:
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_by_id(self, id: ULID) -> None:
         raise NotImplementedError

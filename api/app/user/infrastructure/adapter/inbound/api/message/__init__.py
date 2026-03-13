@@ -1,11 +1,13 @@
 from .CreateUserRequest import CreateUserRequest
 from .GetUserResponse import GetUserResponse
-from .UpdateUserRequest import UpdateUserRequest
-from .UpdateUserResponse import UpdateUserResponse
+from .GetUsersResponse import GetUsersResponse
+from .PatchUserRequest import PatchUserRequest
+from .PatchUserResponse import PatchUserResponse
 
 __all__: list[str] = [
     "CreateUserRequest",
     "GetUserResponse",
-    "UpdateUserRequest",
-    "UpdateUserResponse",
+    "GetUsersResponse",
+    "PatchUserRequest",
+    "PatchUserResponse",
 ]

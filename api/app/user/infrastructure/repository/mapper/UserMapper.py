@@ -15,6 +15,7 @@ class UserMapper:
             memo=alchemy_entity.memo,
             created_at=alchemy_entity.created_at,
             updated_at=alchemy_entity.updated_at,
+            role=alchemy_entity.role,
         )
 
     @staticmethod
@@ -27,4 +28,5 @@ class UserMapper:
             memo=domain_entity.memo,
             created_at=domain_entity.created_at,
             updated_at=domain_entity.updated_at,
+            role=domain_entity.role,
         )

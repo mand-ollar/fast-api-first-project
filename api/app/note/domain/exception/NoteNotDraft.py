@@ -1,0 +1,2 @@
+class NoteNotDraft(Exception):
+    pass

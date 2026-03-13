@@ -1,0 +1,2 @@
+class TagAlreadyExists(Exception):
+    pass

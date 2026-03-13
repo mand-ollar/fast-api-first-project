@@ -1,0 +1,2 @@
+class InvalidDraftTransition(Exception):
+    pass

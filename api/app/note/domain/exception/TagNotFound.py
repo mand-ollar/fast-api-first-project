@@ -1,0 +1,2 @@
+class TagNotFound(Exception):
+    pass

@@ -1,13 +1,19 @@
 import uvicorn
 from fastapi import FastAPI  # type: ignore
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from pydantic_core import ValidationError as CoreValidationError
 
+from app.auth.infrastructure.adapter.inbound.api import router as auth_router
+from app.note.infrastructure.adapter.inbound.api import router as note_router
 from app.user.infrastructure.adapter.inbound.api import router as user_router
 
 app: FastAPI = FastAPI()
 
-app.include_router(user_router, prefix="/users")
+app.include_router(auth_router, prefix="/auth")
+app.include_router(note_router, prefix="/note")
+app.include_router(user_router, prefix="/user")
 
 
 @app.exception_handler(RequestValidationError)
@@ -15,6 +21,14 @@ async def handle_request_validation_error(request, exc: RequestValidationError) 
     return JSONResponse(
         status_code=400,
         content=exc.errors(),
+    )
+
+
+@app.exception_handler(CoreValidationError)
+async def handle_core_validation_error(request, exc: CoreValidationError):
+    return JSONResponse(
+        status_code=422,
+        content=jsonable_encoder({"detail": exc.errors()}),
     )
 
 

@@ -1,7 +1,7 @@
 import os
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, BackgroundTasks, Cookie, Depends, HTTPException, Response, status
 from ulid import ULID  # type: ignore
 
 from app.auth.application.usecase import (
@@ -33,12 +33,14 @@ from app.di.application.usecase import (
     get_verify_credentials_usecase,
     get_verify_password_usecase,
 )
+from app.di.core.notifier import get_email_notifier
 from app.user.domain.entity import User
 from core.auth.domain.exception import (
     DuplicatedPrincipal,
     InvalidCredentials,
     InvalidPrincipal,
 )
+from core.notifier import EmailNotifier
 
 ACCESS_TOKEN_EXPIRE_DAYS: int = int(os.getenv("AUTH_TOKEN_LIFE_DAY", "1825"))
 REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("AUTH_TOKEN_LIFE_DAY", "1825"))
@@ -91,6 +93,8 @@ def sign_in(
 @router.post("/signup", response_model=SignUpResponse, status_code=status.HTTP_201_CREATED)
 def sign_up(
     request_model: SignUpRequest,
+    background_tasks: BackgroundTasks,
+    email_notifier: Annotated[EmailNotifier, Depends(get_email_notifier)],
     response: Response,
     usecase: SignUpUseCase = Depends(get_sign_up_usecase),
 ):
@@ -100,6 +104,7 @@ def sign_up(
             request_model.email,
             request_model.password,
             request_model.memo,
+            request_model.role,
         )
 
         max_age_refresh: int = REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
@@ -118,6 +123,18 @@ def sign_up(
             httponly=True,
             max_age=max_age_access,
             expires=max_age_access,
+        )
+
+        background_tasks.add_task(
+            email_notifier.notify,
+            receiver=user,
+            subject="Welcome to the platform",
+            body=(
+                f"Hello, {user.username}!\n\n"
+                "We are so glad to have you on board.\n"
+                "We hope you enjoy your time here.\n\n"
+                "Best regards,\nTeam Daniel"
+            ),
         )
 
         return SignUpResponse(

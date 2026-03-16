@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status  # type: ignore
+from fastapi import APIRouter, Depends, HTTPException, status
 from ulid import ULID  # type: ignore
 
 from app.di.application import (
@@ -14,6 +14,7 @@ from app.user.application.usecase import CreateUserUseCase, DeleteUserUseCase, G
 from app.user.domain.entity import User
 from app.user.infrastructure.adapter.inbound.api.message import (
     CreateUserRequest,
+    CreateUserResponse,
     GetUserResponse,
     GetUsersResponse,
     PatchUserRequest,
@@ -23,7 +24,7 @@ from app.user.infrastructure.adapter.inbound.api.message import (
 router: APIRouter = APIRouter(tags=["Users"])
 
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=CreateUserResponse)
 def create_user(
     request_model: CreateUserRequest,
     usecase: Annotated[CreateUserUseCase, Depends(get_create_user_usecase)],
@@ -35,7 +36,7 @@ def create_user(
         memo=request_model.memo,
     )
 
-    return user
+    return CreateUserResponse.from_model(user)
 
 
 @router.patch("/{user_id}", response_model=PatchUserResponse)

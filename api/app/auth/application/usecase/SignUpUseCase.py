@@ -3,6 +3,7 @@ from ulid import ULID
 from app.user.domain.entity import User
 from app.user.domain.repository import UserRepository
 from core.auth.domain.entity import Principal
+from core.auth.domain.enum import Role
 from core.auth.domain.exception import DuplicatedPrincipal
 from core.auth.domain.repository import PrincipalRepository
 from core.auth.domain.service import AuthenticationService, PasswordHasher
@@ -23,7 +24,7 @@ class SignUpUseCase:
         self.user_repo: UserRepository = user_repo
 
     def __call__(
-        self, username: str, email: str, password: str, memo: str | None = None
+        self, username: str, email: str, password: str, memo: str | None = None, role: Role = Role.USER
     ) -> tuple[User, Credentials, Credentials]:
         username_exist: bool = self.principal_repo.exists(principal=username)
         if username_exist:
@@ -46,6 +47,7 @@ class SignUpUseCase:
             user_id=user_id,
             principal=username,
             password_hashed=password_hashed,
+            role=role,
         )
         self.principal_repo.add(principal)
 

@@ -1,15 +1,43 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
-from fastapi import FastAPI  # type: ignore
+from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic_core import ValidationError as CoreValidationError
+from sqlalchemy.orm import close_all_sessions
 
 from app.auth.infrastructure.adapter.inbound.api import router as auth_router
 from app.note.infrastructure.adapter.inbound.api import router as note_router
 from app.user.infrastructure.adapter.inbound.api import router as user_router
+from core.db.db import engine
 
-app: FastAPI = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # startup
+    try:
+        yield
+    finally:
+        # shutdown
+        close_all_sessions()
+        engine.dispose()
+
+
+app: FastAPI = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth_router, prefix="/auth")
 app.include_router(note_router, prefix="/note")

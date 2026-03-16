@@ -25,3 +25,7 @@ class PrincipalRepository(ABC):
     @abstractmethod
     def update(self, principal: Principal) -> Principal:
         raise NotImplementedError
+
+    @abstractmethod
+    def delete_by_user_id(self, user_id: ULID) -> None:
+        raise NotImplementedError

@@ -1,3 +1,4 @@
+from sqlalchemy import Delete
 from ulid import ULID
 
 from core.auth.domain.entity import Principal
@@ -61,3 +62,8 @@ class AlchemyPrincipalRepository(PrincipalRepository):
         self.db.refresh(alchemy_entity)
 
         return PrincipalMapper.to_domain_entity(alchemy_entity)
+
+    def delete_by_user_id(self, user_id: ULID) -> None:
+        stmt = Delete(PrincipalAlchemyEntity).where(PrincipalAlchemyEntity.user_id == str(user_id))
+        self.db.execute(stmt)
+        self.db.commit()

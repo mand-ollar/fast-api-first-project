@@ -1,4 +1,5 @@
 from sqlalchemy import Delete, Select, delete, select
+from ulid import ULID  # type: ignore
 
 from core.auth.domain.enum import CredentialType
 from core.auth.domain.exception import InvalidCredentials
@@ -56,5 +57,10 @@ class AlchemyCredentialsRepository(CredentialsRepository):
         else:
             raise InvalidCredentials("Invalid credentials type")
 
+        self.db.execute(stmt)
+        self.db.commit()
+
+    def delete_by_user_id(self, user_id: ULID) -> None:
+        stmt = delete(CredentialsAlchemyEntity).where(CredentialsAlchemyEntity.user_id == str(user_id))
         self.db.execute(stmt)
         self.db.commit()
